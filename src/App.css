@@ -1,0 +1,154 @@
+/* Base styles and resets */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+/* Main app container */
+.AppContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 40px;
+  min-height: 100vh;
+}
+
+/* Note form styles */
+.NoteForm {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  position: sticky;
+  top: 20px;
+  height: fit-content;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+}
+
+.NoteForm input, 
+.NoteForm textarea {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  width: 100%;
+  transition: border-color 0.3s;
+}
+
+.NoteForm input:focus, 
+.NoteForm textarea:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+.NoteForm button {
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 12px 15px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: auto;
+}
+
+.NoteForm button:hover {
+  background-color: #3a80d2;
+}
+
+/* Notes grid */
+.NotesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+/* Individual note */
+.Note {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  position: relative;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.Note:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.NoteHeader {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.NoteHeader button {
+  background-color: transparent;
+  border: none;
+  color: #999;
+  font-size: 18px;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.NoteHeader button:hover {
+  background-color: #ff5252;
+  color: white;
+}
+
+.Note h2 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #333;
+  word-break: break-word;
+}
+
+.Note p {
+  font-size: 15px;
+  color: #666;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .AppContainer {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+  
+  .NoteForm {
+    position: static;
+    margin-bottom: 30px;
+    max-height: none;
+  }
+  
+  .NotesGrid {
+    height: auto;
+  }
+}
+
