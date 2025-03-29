@@ -86,6 +86,7 @@ body {
   padding: 20px;
   position: relative;
   transition: transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
 }
 
 .Note:hover {
@@ -133,6 +134,96 @@ body {
   word-break: break-word;
 }
 
+/* Modal Styles */
+.ModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.Modal {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  padding: 25px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.Modal h2 {
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.ModalInput, 
+.ModalTextarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.ModalInput:focus, 
+.ModalTextarea:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+.ModalTextarea {
+  resize: vertical;
+  min-height: 200px;
+}
+
+.ModalButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.CancelButton,
+.SaveButton {
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.CancelButton {
+  background-color: #f5f5f5;
+  color: #333;
+  border: 1px solid #ddd;
+}
+
+.CancelButton:hover {
+  background-color: #e5e5e5;
+}
+
+.SaveButton {
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+}
+
+.SaveButton:hover {
+  background-color: #3a80d2;
+}
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
@@ -150,5 +241,9 @@ body {
   .NotesGrid {
     height: auto;
   }
+  
+  .Modal {
+    width: 95%;
+    padding: 20px;
+  }
 }
-
