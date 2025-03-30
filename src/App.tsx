@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
@@ -17,52 +17,27 @@ interface ModalState {
 }
 
 function App() {
-  const [notes, setNotes] = useState<Note[]>([
-    {
-      id: 1,
-      title: "test note 1",
-      content: "bla bla note1",
-    },
-    {
-      id: 2,
-      title: "test note 2 ",
-      content: "bla bla note2",
-    },
-    {
-      id: 3,
-      title: "test note 3",
-      content: "bla bla note3",
-    },
-    {
-      id: 4,
-      title: "test note 4 ",
-      content: "bla bla note4",
-    },
-    {
-      id: 5,
-      title: "test note 5",
-      content: "bla bla note5",
-    },
-    {
-      id: 6,
-      title: "test note 6",
-      content: "bla bla note6",
-    },
-    {
-      id: 7,
-      title: "test note 7",
-      content: "bla bla note7",
-    },
-    {
-      id: 8,
-      title: "test note 8",
-      content: "bla bla note8",
+  const [notes, setNotes] = useState<Note[]>([]);
+  const fetchNotes = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:5001/notes"
+      );
+
+      const notes: Note[] =
+        await response.json();
+
+      setNotes(notes);
+    } catch (e) {
+      console.log(e);
     }
-  ]);
+  };
+  useEffect(() => {
+    fetchNotes();
+  }, []);
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
   const [modal, setModal] = useState<ModalState>({
     isOpen: false,
     noteId: null,
@@ -70,49 +45,50 @@ function App() {
     content: ''
   })
 
-  const handleAddNote = (event: React.FormEvent) => {
+  const handleAddNote = async (event: React.FormEvent) => {
     event.preventDefault();
-    const newNote: Note = {
-      id: notes.length + 1,
-      title: title,
-      content: content,
-    };
-    setNotes([...notes, newNote]);
-    setTitle('');
-    setContent('');
+    try {
+      const response = await fetch(
+        "http://localhost:5001/notes",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title,
+            content,
+          }),
+        }
+      );
+      const newNote = await response.json();
+      setNotes([...notes, newNote]);
+      setTitle('');
+      setContent('');
+    } catch (e) {
+      console.log(e);
+    }
   };
 
-  const handleNoteClick = (note: Note) => {
-    setSelectedNote(note);
-    setTitle(note.title);
-    setContent(note.content);
-  };
-
-  const handleUpdateNote = (event: React.FormEvent) => {
-    event.preventDefault();
-    if (!selectedNote) return;
-    const updatedNote: Note = {
-      id: selectedNote.id,
-      title: title,
-      content: content,
-    };
-    const updatedNotes = notes.map((note) => (note.id === selectedNote.id ? updatedNote : note));
-    setNotes(updatedNotes);
-    setTitle('');
-    setContent('');
-    setSelectedNote(null);
-  };
-
-  const handleCancel = () => {
-    setTitle('');
-    setContent('');
-    setSelectedNote(null);
-  }
-
-  const deleteNote = (event: React.MouseEvent, noteId: number) => {
+  const deleteNote = async (event: React.MouseEvent, noteId: number) => {
     event.stopPropagation();
-    const updatedNotes = notes.filter((note) => note.id !== noteId);
-    setNotes(updatedNotes);
+    try {
+      // Make the DELETE request to the backend
+      const response = await fetch(`http://localhost:5001/notes/${noteId}`, {
+        method: "DELETE",
+      });
+      
+      // Check if the deletion was successful
+      if (response.ok) {
+        // Only update the UI if the backend deletion succeeded
+        const updatedNotes = notes.filter((note) => note.id !== noteId);
+        setNotes(updatedNotes);
+      } else {
+        console.error("Failed to delete note on the server");
+      }
+    } catch (e) {
+      console.error("Error deleting note:", e);
+    }
   };
 
   const openEditModal = (note: Note) => {
@@ -133,7 +109,7 @@ function App() {
     });
   };
 
-  const saveEditedNote = () => {
+  const saveEditedNote = async () => {
     if (modal.noteId === null) return;
     // Validate that title and content are not empty
     if (!modal.title.trim() || !modal.content.trim()) {
@@ -141,9 +117,23 @@ function App() {
       return;
     }
 
-    const updatedNotes = notes.map((note) => (note.id === modal.noteId ? { ...note, title: modal.title, content: modal.content } : note));
-    setNotes(updatedNotes);
-    closeEditModal();
+    try {
+      await fetch(`http://localhost:5001/notes/${modal.noteId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: modal.title,
+          content: modal.content,
+        }),
+      })
+      const updatedNotes = notes.map((note) => (note.id === modal.noteId ? { ...note, title: modal.title, content: modal.content } : note));
+      setNotes(updatedNotes);
+      closeEditModal();
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
